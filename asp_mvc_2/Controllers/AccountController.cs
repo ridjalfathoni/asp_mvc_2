@@ -56,5 +56,10 @@ namespace Asp_mvc_2.Controllers
             // If we got this far, something failed, redisplay form
             return View(ULV);
         }
+        public ActionResult SignOut()
+        {
+            FormsAuthentication.SignOut();
+            return RedirectToAction("Index", "Home");
+        }
     }
 }
