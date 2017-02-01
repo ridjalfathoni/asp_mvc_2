@@ -14,7 +14,7 @@ namespace asp_mvc_2.Controllers
             return View();
         }
 
-        [AuthorizeRoles("Admin")]
+        [AuthorizeRoles("Admin","Manager")]
         public ActionResult AdminOnly()
         {
             return View();
