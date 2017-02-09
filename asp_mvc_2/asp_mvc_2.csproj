@@ -237,6 +237,7 @@
     <Content Include="Models\DB\DemoModel.edmx.diagram">
       <DependentUpon>DemoModel.edmx</DependentUpon>
     </Content>
+    <Content Include="Views\Home\ManageUserPartial.cshtml" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>
