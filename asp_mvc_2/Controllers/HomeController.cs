@@ -1,6 +1,5 @@
 ﻿using System.Web.Mvc;
 using asp_mvc_2.Security;
-using System.Web.Security;
 using asp_mvc_2.Models.ViewModel;
 using asp_mvc_2.Models.EntityManager;
 namespace asp_mvc_2.Controllers
@@ -17,7 +16,7 @@ namespace asp_mvc_2.Controllers
             return View();
         }
 
-        [AuthorizeRoles("Admin","Manager")]
+        [AuthorizeRoles("Admin", "Manager")]
         public ActionResult AdminOnly()
         {
             return View();
@@ -55,12 +54,24 @@ namespace asp_mvc_2.Controllers
             UPV.LoginName = loginName;
             UPV.Password = password;
             UPV.FirstName = firstName;
-            UPV.LastName = lastName; UPV.Gender = gender;
+            UPV.LastName = lastName;
+            UPV.Gender = gender;
+
             if (roleID > 0)
                 UPV.LOOKUPRoleID = roleID;
+
             UserManager UM = new UserManager();
             UM.UpdateUserAccount(UPV);
+
             return Json(new { success = true });
+        }
+
+        [AuthorizeRoles("Admin")]
+        public ActionResult DeleteUser(int userID)
+        {
+            UserManager UM = new UserManager(); UM.DeleteUser(userID);
+            return Json(new { success = true });
+
         }
     }
 }

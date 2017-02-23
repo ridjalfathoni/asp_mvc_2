@@ -122,7 +122,8 @@ namespace asp_mvc_2.Models.EntityManager
                 var users = db.SYSUsers.ToList();
                 foreach (SYSUser u in db.SYSUsers)
                 {
-                    UPV = new UserProfileView(); UPV.SYSUserID = u.SYSUserID;
+                    UPV = new UserProfileView();
+                    UPV.SYSUserID = u.SYSUserID;
                     UPV.LoginName = u.LoginName;
                     UPV.Password = u.PasswordEncryptedText;
                     var SUP = db.SYSUserProfiles.Find(u.SYSUserID);
@@ -189,21 +190,26 @@ namespace asp_mvc_2.Models.EntityManager
                         SU.RowModifiedSYSUserID = user.SYSUserID;
                         SU.RowCreatedDateTime = DateTime.Now;
                         SU.RowMOdifiedDateTime = DateTime.Now;
+
                         db.SaveChanges();
+
                         var userProfile = db.SYSUserProfiles.Where(o => o.SYSUserID ==
                         user.SYSUserID);
                         if (userProfile.Any())
                         {
                             SYSUserProfile SUP = userProfile.FirstOrDefault();
-                            SUP.SYSUserID = SU.SYSUserID; SUP.FirstName = user.FirstName;
+                            SUP.SYSUserID = SU.SYSUserID;
+                            SUP.FirstName = user.FirstName;
                             SUP.LastName = user.LastName;
                             SUP.Gender = user.Gender;
                             SUP.RowCreatedSYSUserID = user.SYSUserID;
                             SUP.RowModifiedSYSUserID = user.SYSUserID;
                             SUP.RowCreatedDateTime = DateTime.Now;
                             SUP.RowModifiedDateTime = DateTime.Now;
+
                             db.SaveChanges();
                         }
+
                         if (user.LOOKUPRoleID > 0)
                         {
                             var userRole = db.SYSUserRoles.Where(o => o.SYSUserID ==
@@ -232,6 +238,42 @@ namespace asp_mvc_2.Models.EntityManager
                                 SUR.RowModifiedDateTime = DateTime.Now;
                                 db.SYSUserRoles.Add(SUR);
                             }
+                            db.SaveChanges();
+                        }
+                        dbContextTransaction.Commit();
+                    }
+                    catch
+                    {
+                        dbContextTransaction.Rollback();
+                    }
+                }
+            }
+        }
+
+        public void DeleteUser(int userID)
+        {
+            using (DemoDBEntities db = new DemoDBEntities())
+            {
+                using (var dbContextTransaction = db.Database.BeginTransaction())
+                {
+                    try
+                    {
+                        var SUR = db.SYSUserRoles.Where(o => o.SYSUserID == userID);
+                        if (SUR.Any())
+                        {
+                            db.SYSUserRoles.Remove(SUR.FirstOrDefault());
+                            db.SaveChanges();
+                        }
+                        var SUP = db.SYSUserProfiles.Where(o => o.SYSUserID == userID);
+                        if (SUP.Any())
+                        {
+                            db.SYSUserProfiles.Remove(SUP.FirstOrDefault());
+                            db.SaveChanges();
+                        }
+                        var SU = db.SYSUsers.Where(o => o.SYSUserID == userID);
+                        if (SU.Any())
+                        {
+                            db.SYSUsers.Remove(SU.FirstOrDefault());
                             db.SaveChanges();
                         }
                         dbContextTransaction.Commit();
